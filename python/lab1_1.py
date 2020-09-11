@@ -28,22 +28,45 @@ def load_attributes():
 
     return attributes
 
-data = load_datasets()
+def print_average_gain(datasets, attributes):
+    # Calculate average gain for datasets
+    print("Information gain")
+    for data in datasets:
+        print("For " + data + " the:")
+        for attribute in attributes:
+            print("information gain for " + attribute + " was: " + str(averageGain(datasets[data], attributes[attribute])))
+   
+def print_entropy(datasets):
+    # Calculate entropy for datasets
+    for dataset in datasets:
+        print("Entropy of " + dataset + ": "  + str(entropy(datasets[dataset])))
+
+
+
+datasets = load_datasets()
 attributes = load_attributes()
+#print_average_gain(datasets, attributes)
+print_entropy(datasets)
 
-# Calculate entropy for datasets
-print("Entropy of monk 1: " + str(entropy(data['monk1'])))
-print("Entropy of monk 2: " + str(entropy(data['monk2'])))
-print("Entropy of monk 3: " + str(entropy(data['monk3'])))
-print("Information gain")
 
-# Calculate average gain for datasets
-for dataset in data:
-    print("For " + dataset + " the:")
-    for attribute in attributes:
-        print("information gain for " + attribute + " was: " + str(averageGain(data[dataset], attributes[attribute])))
-    
-split = select(data['monk1'], attributes['a1'], 1)
+ 
+# Based on the results of information gain (use the highest) for each dataset
+# monk1 use attribute 5
+splits = {
+    'm1split1': select(datasets['monk1'], attributes['a5'], 1),
+    'm1split2': select(datasets['monk1'], attributes['a5'], 2),
+    'm1split3': select(datasets['monk1'], attributes['a5'], 3),
+    'm1split4': select(datasets['monk1'], attributes['a5'], 4),
+    'm2split1': select(datasets['monk2'], attributes['a5'], 1),
+    'm2split2': select(datasets['monk2'], attributes['a5'], 2),
+    'm2split3': select(datasets['monk2'], attributes['a5'], 3),
+    'm2split4': select(datasets['monk2'], attributes['a5'], 4),
+}
+
+print_entropy(splits)
+# monk2 use attribute 5
+# monk3 use attribute 2
+
 
 
 
