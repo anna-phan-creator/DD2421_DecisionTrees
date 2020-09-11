@@ -16,11 +16,6 @@ def load_datasets():
     return data
 
 def load_attributes():
-    # Calculate entropy for datasets
-    print("Entropy of monk 1: " + str(entropy(data['monk1'])))
-    print("Entropy of monk 2: " + str(entropy(data['monk2'])))
-    print("Entropy of monk 3: " + str(entropy(data['monk3'])))
-
     # Create attribute class
     attributes = {
         'a1': m.attributes[0],
@@ -31,14 +26,22 @@ def load_attributes():
         'a6': m.attributes[5],
     }
 
-    print("Information gain")
-    for dataset in data:
-        print(dataset)
-        for attribute in attributes:
-            print(attribute + ": " + str(averageGain(data[dataset], attributes[attribute])))
-    
     return attributes
 
 data = load_datasets()
 attributes = load_attributes()
+
+# Calculate entropy for datasets
+print("Entropy of monk 1: " + str(entropy(data['monk1'])))
+print("Entropy of monk 2: " + str(entropy(data['monk2'])))
+print("Entropy of monk 3: " + str(entropy(data['monk3'])))
+print("Information gain")
+
+# Calculate average gain for datasets
+for dataset in data:
+    print(dataset)
+    for attribute in attributes:
+        print(attribute + ": " + str(averageGain(data[dataset], attributes[attribute])))
+    
+
 
