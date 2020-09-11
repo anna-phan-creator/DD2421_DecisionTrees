@@ -39,9 +39,12 @@ print("Information gain")
 
 # Calculate average gain for datasets
 for dataset in data:
-    print(dataset)
+    print("For " + dataset + " the:")
     for attribute in attributes:
-        print(attribute + ": " + str(averageGain(data[dataset], attributes[attribute])))
+        print("information gain for " + attribute + " was: " + str(averageGain(data[dataset], attributes[attribute])))
     
+split = select(data['monk1'], attributes['a1'], 1)
+
+
 
 
