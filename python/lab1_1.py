@@ -2,6 +2,7 @@ import monkdata as m
 import numpy as np
 import dtree as d 
 import drawtree_qt5 as pyqt
+import random
 
 # Load monk datasets
 def load_datasets():
@@ -66,11 +67,33 @@ splits = {
 }
 print_entropy(splits)
 
+
+def partition(data, fraction):
+    ldata = list(data)
+    random.shuffle(ldata)
+    breakPoint = int(len(ldata) * fraction)
+    return ldata[:breakPoint], ldata[breakPoint:]
+
+
+def load_partition():
+    (monk1train, monk1val) = partition(datasets['monk1']+datasets['monk1t'], 0.6)
+    (monk2train, monk2val) = partition(datasets['monk2']+datasets['monk2t'], 0.6)
+    (monk3train, monk3val) = partition(datasets['monk3']+datasets['monk3t'], 0.6)
+    
+    partitions = {
+    'monk1_p': monk1train,
+    'monk1t_p': monk1val,
+    'monk2_p': monk2train,
+    'monk2t_p': monk2val,
+    'monk3_p': monk3train,
+    'monk3t_p': monk3val,
+    }
+
+    return partitions
+
+partitions = load_partition()
+
 t = d.buildTree(m.monk1, m.attributes)
 pyqt.drawTree(t)
 print(d.check(t, m.monk1test))
-
-
-
-
 
