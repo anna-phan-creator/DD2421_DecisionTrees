@@ -1,6 +1,7 @@
 import monkdata as m
 import numpy as np
-from dtree import * 
+import dtree as d 
+import drawtree_qt5 as pyqt
 
 # Load monk datasets
 def load_datasets():
@@ -16,11 +17,6 @@ def load_datasets():
     return data
 
 def load_attributes():
-    # Calculate entropy for datasets
-    print("Entropy of monk 1: " + str(entropy(data['monk1'])))
-    print("Entropy of monk 2: " + str(entropy(data['monk2'])))
-    print("Entropy of monk 3: " + str(entropy(data['monk3'])))
-
     # Create attribute class
     attributes = {
         'a1': m.attributes[0],
@@ -31,14 +27,50 @@ def load_attributes():
         'a6': m.attributes[5],
     }
 
-    print("Information gain")
-    for dataset in data:
-        print(dataset)
-        for attribute in attributes:
-            print(attribute + ": " + str(averageGain(data[dataset], attributes[attribute])))
-    
     return attributes
 
-data = load_datasets()
+def print_average_gain(datasets, attributes):
+    # Calculate average gain for datasets
+    print("Information gain")
+    for data in datasets:
+        print("For " + data + " the:")
+        for attribute in attributes:
+            print("information gain for " + attribute + " was: " + str(d.averageGain(datasets[data], attributes[attribute])))
+   
+def print_entropy(datasets):
+    # Calculate entropy for datasets
+    for dataset in datasets:
+        print("Entropy of " + dataset + ": "  + str(d.entropy(datasets[dataset])))
+
+datasets = load_datasets()
 attributes = load_attributes()
+#print_average_gain(datasets, attributes)
+print_entropy(datasets)
+
+# Based on the results of information gain (use the highest) for each dataset
+# monk1 use attribute 5
+# monk2 use attribute 5
+# monk3 use attribute 2
+splits = {
+    'm1split1': d.select(datasets['monk1'], attributes['a5'], 1),
+    'm1split2': d.select(datasets['monk1'], attributes['a5'], 2),
+    'm1split3': d.select(datasets['monk1'], attributes['a5'], 3),
+    'm1split4': d.select(datasets['monk1'], attributes['a5'], 4),
+    'm2split1': d.select(datasets['monk2'], attributes['a5'], 1),
+    'm2split2': d.select(datasets['monk2'], attributes['a5'], 2),
+    'm2split3': d.select(datasets['monk2'], attributes['a5'], 3),
+    'm2split4': d.select(datasets['monk2'], attributes['a5'], 4),
+    'm3split1': d.select(datasets['monk3'], attributes['a2'], 1),
+    'm3split2': d.select(datasets['monk3'], attributes['a2'], 2),
+    'm3split3': d.select(datasets['monk3'], attributes['a2'], 3),
+}
+print_entropy(splits)
+
+t = d.buildTree(m.monk1, m.attributes)
+pyqt.drawTree(t)
+print(d.check(t, m.monk1test))
+
+
+
+
 
