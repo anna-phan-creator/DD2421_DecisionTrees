@@ -67,7 +67,19 @@ splits = {
 }
 print_entropy(splits)
 
+# Assignment 5
+t1 = d.buildTree(m.monk1, m.attributes)
+pyqt.drawTree(t1)
+print(d.check(t1, m.monk1test))
+t2 = d.buildTree(m.monk2, m.attributes)
+pyqt.drawTree(t2)
+print(d.check(t2, m.monk2test))
+t2 = d.buildTree(m.monk2, m.attributes)
+pyqt.drawTree(t2)
+print(d.check(t2, m.monk2test))
 
+# Assignment 6
+# Shuffle dataset, partition from start to breakpoint and breakpoint to end
 def partition(data, fraction):
     ldata = list(data)
     random.shuffle(ldata)
@@ -92,8 +104,4 @@ def load_partition():
     return partitions
 
 partitions = load_partition()
-
-t = d.buildTree(m.monk1, m.attributes)
-pyqt.drawTree(t)
-print(d.check(t, m.monk1test))
 
