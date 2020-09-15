@@ -91,7 +91,7 @@ def partition(data, fraction):
 def load_partition():
     (monk1train, monk1val) = partition(datasets['monk1']+datasets['monk1t'], 0.6)
     (monk2train, monk2val) = partition(datasets['monk2']+datasets['monk2t'], 0.6)
-    (monk3train, monk3val) = partition(datasets['monk3']+datasets['monk3t'], 0.6)
+    (monk3train, monk3val) = partition(datasets['monk3'], 0.6)
     
     partitions = {
     'monk1_p': monk1train,
@@ -104,62 +104,38 @@ def load_partition():
 
     return partitions
 
-partitions = load_partition()
-
-"""
-while acc > 0.86
-    tlist = d.allpruned(tlist[save])
-    for i in range len tlist
-        acc = check(tlist[i], monk1t_p)
-        if acc > acc_previous
-            acc_previous = acc
-            save = i
-            print(acc_previous)       
-"""
-
-t = d.buildTree(partitions['monk1_p'], m.attributes)
-e = d.check(t, partitions['monk1t_p'])
-
-tlist = d.allPruned(t)
-
-def print_prunedTree(train, validation):
+def print_prunedTree(train, validation, acc_desired):
     t = d.buildTree(train, m.attributes)
     accuracy = d.check(t, validation)
     accuracy_p = accuracy
-    acc_prev_tree = accuracy_p
     print("Starting accuracy:" + str(accuracy))
-    
-    while(accuracy_p >= acc_prev_tree):
-        tlist = d.allPruned(t)
-        acc_prev_tree = accuracy_p
+   
+
+    while(accuracy_p > acc_desired):
+        temp = t
+        tlist = d.allPruned(t)    
+        accuracy_p = 0
         for i in range(0, len(tlist)):
             print(i)
-            accuracy = d.check(t, validation)
-            print("Pruned tree no" + i + "accuracy:" + str(accuracy))
+            accuracy = d.check(tlist[i], validation)
+            print("Pruned tree no " + str(i) + " accuracy: " + str(accuracy))
             #print(accuracy_p)
             if(accuracy >= accuracy_p):
                 accuracy_p = accuracy
-                print("Set new accuracy_p:" + str(accuracy_p)
-                #t = tlist[i]
-            else:
-                accuracy_p = accuracy
+                print("Set new accuracy_p: " + str(accuracy_p))
+                t = tlist[i]
+                
         #print(str(acc_prev_tree) + " " + str(accuracy_p))
-        
+
+    if(d.check(temp, validation) > d.check(t, validation)):
+        t = temp
+
     print(t)
+    print("Final accuracy: " + str(d.check(t, validation)))
     pyqt.drawTree(t)
 
+#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'], 0.90)
+partitions = load_partition()
 
-t = d.buildTree(partitions['monk1_p'], m.attributes)
-print(d.check(t, partitions['monk1t_p']))
-tlist = d.allPruned(t)
-for i in range(0, len(tlist)):
-    print(d.check(tlist[i], partitions['monk1t_p']))
-print("--------------")
-print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])
-
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])       
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])       
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])       
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])       
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])       
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'])       
+#print_prunedTree(m.monk3, m.monk3test, 0.90) 
+print_prunedTree(partitions['monk3_p'], partitions['monk3t_p'], 0.8)  
