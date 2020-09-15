@@ -169,6 +169,8 @@ def plot_error(end):
     plt.plot(fractions, mean[0], 'r', label='monk1')
     plt.plot(fractions, mean[1], 'b', label='monk3')
     plt.legend()
+    plt.ylabel("error")
+    plt.xlabel("fractions")
     plt.show()
 
-plot_error(1000) 
+plot_error(100) 
