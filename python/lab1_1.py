@@ -3,6 +3,8 @@ import numpy as np
 import dtree as d 
 import drawtree_qt5 as pyqt
 import random
+import numpy as np
+import matplotlib.pyplot as plt
 
 # Load monk datasets
 def load_datasets():
@@ -88,10 +90,10 @@ def partition(data, fraction):
     return ldata[:breakPoint], ldata[breakPoint:]
 
 
-def load_partition():
-    (monk1train, monk1val) = partition(datasets['monk1']+datasets['monk1t'], 0.6)
-    (monk2train, monk2val) = partition(datasets['monk2']+datasets['monk2t'], 0.6)
-    (monk3train, monk3val) = partition(datasets['monk3'], 0.6)
+def load_partition(fraction):
+    (monk1train, monk1val) = partition(datasets['monk1'], fraction)
+    (monk2train, monk2val) = partition(datasets['monk2'], fraction)
+    (monk3train, monk3val) = partition(datasets['monk3'], fraction)
     
     partitions = {
     'monk1_p': monk1train,
@@ -104,38 +106,63 @@ def load_partition():
 
     return partitions
 
-def print_prunedTree(train, validation, acc_desired):
+def pruneTree(train, validation, acc_desired):
+    
     t = d.buildTree(train, m.attributes)
     accuracy = d.check(t, validation)
     accuracy_p = accuracy
-    print("Starting accuracy:" + str(accuracy))
-   
-
+    #print("Starting accuracy:" + str(accuracy))
+    temp = t
+    
     while(accuracy_p > acc_desired):
         temp = t
         tlist = d.allPruned(t)    
         accuracy_p = 0
         for i in range(0, len(tlist)):
-            print(i)
+            #print(i)
             accuracy = d.check(tlist[i], validation)
-            print("Pruned tree no " + str(i) + " accuracy: " + str(accuracy))
+            #print("Pruned tree no " + str(i) + " accuracy: " + str(accuracy))
             #print(accuracy_p)
             if(accuracy >= accuracy_p):
                 accuracy_p = accuracy
-                print("Set new accuracy_p: " + str(accuracy_p))
+                #print("Set new accuracy_p: " + str(accuracy_p))
                 t = tlist[i]
                 
         #print(str(acc_prev_tree) + " " + str(accuracy_p))
 
     if(d.check(temp, validation) > d.check(t, validation)):
         t = temp
-
+    """ 
     print(t)
     print("Final accuracy: " + str(d.check(t, validation)))
-    pyqt.drawTree(t)
+    pyqt.drawTree(t) 
+    """
+    return t
 
 #print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'], 0.90)
-partitions = load_partition()
+partitions = load_partition(0.6)
 
 #print_prunedTree(m.monk3, m.monk3test, 0.90) 
-print_prunedTree(partitions['monk3_p'], partitions['monk3t_p'], 0.8)  
+#pruneTree(partitions['monk3_p'], partitions['monk3t_p'], 0.80)  
+
+def plot_error(end):
+    fractions = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
+    error = np.zeros((len(fractions), end))
+    l_mean = []
+    l_var = []
+    
+    for l in range(0, len(fractions)):
+        partitions = load_partition(fractions[l])
+        for i in range(0, end):
+            t = pruneTree(partitions['monk1_p'], partitions['monk1t_p'], 0.7)
+            error[l,i] = 1 - d.check(t, partitions['monk1t_p'])
+        l_mean.append(np.mean(error[l]))
+        l_var.append(np.var(error[l]))
+         
+    print(l_mean)
+    print(l_var)
+
+    plt.plot(fractions, l_mean, 'r', fractions, l_var, 'b')
+    plt.show()
+
+plot_error(100) 
