@@ -113,8 +113,9 @@ def pruneTree(train, validation, acc_desired):
     accuracy_p = accuracy
     #print("Starting accuracy:" + str(accuracy))
     temp = t
-    
-    while(accuracy_p > acc_desired):
+    tt = 0
+    while(tt < acc_desired):
+        tt+=1
         temp = t
         tlist = d.allPruned(t)    
         accuracy_p = 0
@@ -148,21 +149,26 @@ partitions = load_partition(0.6)
 def plot_error(end):
     fractions = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
     error = np.zeros((len(fractions), end))
+    names=['monk1', 'monk3']
     l_mean = []
     l_var = []
-    
-    for l in range(0, len(fractions)):
-        partitions = load_partition(fractions[l])
-        for i in range(0, end):
-            t = pruneTree(partitions['monk1_p'], partitions['monk1t_p'], 0.7)
-            error[l,i] = 1 - d.check(t, partitions['monk1t_p'])
-        l_mean.append(np.mean(error[l]))
-        l_var.append(np.var(error[l]))
-         
-    print(l_mean)
-    print(l_var)
+    mean = list()
+    for s in range(0,2):
+        print(s) 
+        for l in range(0, len(fractions)):
+            train, validation = partition(datasets[names[s]], fractions[l])
+            for i in range(0, end):
+                t = pruneTree(train, validation, 5)
+                error[l,i] = 1 - d.check(t, validation)
+            l_mean.append(np.mean(error[l]))
+            l_var.append(np.var(error[l]))
+        mean.append(l_mean)
+        l_mean = []
+    print(mean)
 
-    plt.plot(fractions, l_mean, 'r', fractions, l_var, 'b')
+    plt.plot(fractions, mean[0], 'r', label='monk1')
+    plt.plot(fractions, mean[1], 'b', label='monk3')
+    plt.legend()
     plt.show()
 
-plot_error(100) 
+plot_error(1000) 
