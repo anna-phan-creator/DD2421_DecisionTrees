@@ -45,41 +45,21 @@ def print_entropy(datasets):
     for dataset in datasets:
         print("Entropy of " + dataset + ": "  + str(d.entropy(datasets[dataset])))
 
-datasets = load_datasets()
-attributes = load_attributes()
-#print_average_gain(datasets, attributes)
-#print_entropy(datasets)
-
-# Based on the results of information gain (use the highest) for each dataset
-# monk1 use attribute 5
-# monk2 use attribute 5
-# monk3 use attribute 2
-splits = {
-    'm1split1': d.select(datasets['monk1'], attributes['a5'], 1),
-    'm1split2': d.select(datasets['monk1'], attributes['a5'], 2),
-    'm1split3': d.select(datasets['monk1'], attributes['a5'], 3),
-    'm1split4': d.select(datasets['monk1'], attributes['a5'], 4),
-    'm2split1': d.select(datasets['monk2'], attributes['a5'], 1),
-    'm2split2': d.select(datasets['monk2'], attributes['a5'], 2),
-    'm2split3': d.select(datasets['monk2'], attributes['a5'], 3),
-    'm2split4': d.select(datasets['monk2'], attributes['a5'], 4),
-    'm3split1': d.select(datasets['monk3'], attributes['a2'], 1),
-    'm3split2': d.select(datasets['monk3'], attributes['a2'], 2),
-    'm3split3': d.select(datasets['monk3'], attributes['a2'], 3),
-}
-#print_entropy(splits)
 
 # Assignment 5
 def a5():
     t1 = d.buildTree(m.monk1, m.attributes)
-    pyqt.drawTree(t1)
-    print(d.check(t1, m.monk1test))
+    #pyqt.drawTree(t1)
+    print("Accuracy monk 1 train" + str(d.check(t1, m.monk1)))
+    print("Accuracy monk 1 test" + str(d.check(t1, m.monk1test)))
     t2 = d.buildTree(m.monk2, m.attributes)
-    pyqt.drawTree(t2)
-    print(d.check(t2, m.monk2test))
+    #pyqt.drawTree(t2)
+    print("Accuracy monk 2 train" + str(d.check(t2, m.monk2)))
+    print("Accuracy monk 2 test" + str(d.check(t2, m.monk2test)))
     t3 = d.buildTree(m.monk3, m.attributes)
-    pyqt.drawTree(t3)
-    print(d.check(t3, m.monk3test))
+    #pyqt.drawTree(t3)
+    print("Accuracy monk 3 train" + str(d.check(t3, m.monk3)))
+    print("Accuracy monk 3 test" + str(d.check(t3, m.monk3test)))
 
 # Assignment 6
 # Shuffle dataset, partition from start to breakpoint and breakpoint to end
@@ -140,12 +120,6 @@ def pruneTree(train, validation, acc_desired):
     """
     return t
 
-#print_prunedTree(partitions['monk1_p'], partitions['monk1t_p'], 0.90)
-partitions = load_partition(0.6)
-
-#print_prunedTree(m.monk3, m.monk3test, 0.90) 
-#pruneTree(partitions['monk3_p'], partitions['monk3t_p'], 0.80)  
-
 def plot_error(end):
     fractions = [0.3, 0.4, 0.5, 0.6, 0.7, 0.8]
     error = np.zeros((len(fractions), end))
@@ -173,4 +147,39 @@ def plot_error(end):
     plt.xlabel("fractions")
     plt.show()
 
+
+datasets = load_datasets()
+attributes = load_attributes()
+partitions = load_partition(0.6)
+
+# Assignment 1
+print_entropy(datasets)
+
+# Assignment 3
+print_average_gain(datasets, attributes)
+# Based on the results of information gain (use the highest) for each dataset
+# monk1 use attribute 5
+# monk2 use attribute 5
+# monk3 use attribute 2
+
+# Assignment 4
+splits = {
+    'm1split1': d.select(datasets['monk1'], attributes['a5'], 1),
+    'm1split2': d.select(datasets['monk1'], attributes['a5'], 2),
+    'm1split3': d.select(datasets['monk1'], attributes['a5'], 3),
+    'm1split4': d.select(datasets['monk1'], attributes['a5'], 4),
+    'm2split1': d.select(datasets['monk2'], attributes['a5'], 1),
+    'm2split2': d.select(datasets['monk2'], attributes['a5'], 2),
+    'm2split3': d.select(datasets['monk2'], attributes['a5'], 3),
+    'm2split4': d.select(datasets['monk2'], attributes['a5'], 4),
+    'm3split1': d.select(datasets['monk3'], attributes['a2'], 1),
+    'm3split2': d.select(datasets['monk3'], attributes['a2'], 2),
+    'm3split3': d.select(datasets['monk3'], attributes['a2'], 3),
+}
+print_entropy(splits)
+
+#Assignment 5
+a5()
+
+# Assignment 7
 plot_error(100) 
