@@ -182,4 +182,4 @@ print_entropy(splits)
 a5()
 
 # Assignment 7
-plot_error(100) 
+plot_error(1000) 
